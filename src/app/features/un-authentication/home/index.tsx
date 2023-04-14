@@ -7,6 +7,8 @@ import { Block, Screen, Spacer, Text } from '@components';
 import { Following } from './following';
 import { MyHolding } from './my-holding';
 
+import { ChartLine } from '../chart';
+
 export const Home1 = () => {
   // state
   const [idSelected, setIdSelected] = useState(0);
@@ -22,7 +24,7 @@ export const Home1 = () => {
   // render
   return (
     <Screen scroll unsafe>
-      <Block height={430} color="red" />
+      <ChartLine />
       <Spacer height={10} />
       <Animated.View>
         <Block

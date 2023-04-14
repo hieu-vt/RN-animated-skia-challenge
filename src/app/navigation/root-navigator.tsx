@@ -36,11 +36,11 @@ export const RootNavigation = () => {
             animationTypeForReplace: 'pop',
             gestureEnabled: true,
           }}>
+          <RootStack.Screen name={APP_SCREEN.HOME} component={Home1} />
           <RootStack.Screen
             name={APP_SCREEN.HOME1}
             component={HeaderAnimated}
           />
-          <RootStack.Screen name={APP_SCREEN.HOME} component={Home1} />
           <RootStack.Screen name={APP_SCREEN.LOGIN} component={Login} />
         </RootStack.Group>
       ) : (

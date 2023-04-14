@@ -5,6 +5,9 @@ import { Block, Button, Screen, Spacer, Text, Wallpaper } from '@components';
 import {
   Canvas,
   Circle,
+  Extrapolate,
+  Group,
+  interpolate,
   Path,
   runTiming,
   useComputedValue,
@@ -26,15 +29,11 @@ export const ChartLine = () => {
   const transition = useValue(1);
 
   const state = useValue({
-    current: 0,
-    next: 1,
+    current: 2,
+    next: 3,
   });
 
   const [dateSelected, setDateSelected] = useState('3M');
-
-  // const [graphData, setGraphData] = useState<
-  //   Array<ReturnType<typeof makeGraph>>
-  // >([]);
 
   // func
   const getHoldingsData = useCallback((type: string) => {
@@ -49,8 +48,7 @@ export const ChartLine = () => {
         return HoldingsPnLData.slice(0, 6);
 
       case '3M':
-        return HoldingsPnLData.slice(0, 8);
-
+        return HoldingsPnLData.slice(0, 9);
       case '1Y':
         return HoldingsPnLData.slice(0, 12);
 
@@ -72,7 +70,7 @@ export const ChartLine = () => {
     transition.current = 0;
 
     runTiming(transition, 1, {
-      duration: 750,
+      duration: 500,
       easing: Easing.inOut(Easing.cubic),
     });
   };
@@ -85,14 +83,30 @@ export const ChartLine = () => {
 
     const result = end.interpolate(start, transition.current);
 
-    console.log('transition', result?.toSVGString());
-
-    return result?.toSVGString() ?? '0';
+    return result?.toSVGString() ?? end.toSVGString();
   }, [transition, state]);
 
-  const lastPointVec = useComputedValue(() => {
-    return graphData.current[state.current.current].lastPoint;
-  }, [state]);
+  const lastPoint = useComputedValue(() => {
+    const currLastPoint = graphData.current[state.current.current].lastPoint;
+
+    const nextLastPoint = graphData.current[state.current.next].lastPoint;
+
+    const x = interpolate(
+      transition.current,
+      [0, 1],
+      [currLastPoint.x, nextLastPoint.x],
+      Extrapolate.CLAMP,
+    );
+
+    const y = interpolate(
+      transition.current,
+      [0, 1],
+      [currLastPoint.y, nextLastPoint.y],
+      Extrapolate.CLAMP,
+    );
+
+    return { x, y };
+  }, [state, transition]);
 
   // render
   return (
@@ -109,26 +123,22 @@ export const ChartLine = () => {
               height: CHART_HEIGHT,
               width: CHART_WIDTH,
             }}>
-            <Circle
-              r={POINT_R1}
-              cx={lastPointVec.current.x}
-              cy={lastPointVec.current.y}
-              color={'white'}
-              opacity={0.5}
-            />
-            <Path
-              path={path}
-              style="stroke"
-              strokeJoin="round"
-              strokeWidth={2}
-              color={'white'}
-            />
-            <Circle
-              r={POINT_R}
-              cx={lastPointVec.current.x}
-              cy={lastPointVec.current.y}
-              color={'white'}
-            />
+            <Group>
+              <Circle
+                r={POINT_R1}
+                color={'white'}
+                opacity={0.5}
+                c={lastPoint}
+              />
+              <Path
+                path={path}
+                style="stroke"
+                strokeJoin="round"
+                strokeWidth={2}
+                color={'white'}
+              />
+              <Circle r={POINT_R} c={lastPoint} color={'white'} />
+            </Group>
           </Canvas>
           <Spacer height={20} />
           <Block

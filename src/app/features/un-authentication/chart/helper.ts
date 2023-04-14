@@ -52,14 +52,16 @@ const getNewData = (data: Array<HoldingsPnLDataType>) => {
   if (monthlyAverages.length <= numPointsToDisplay) {
     displayedPoints = monthlyAverages;
   } else {
-    displayedPoints = [monthlyAverages[0]];
+    const intervalSize = monthlyAverages.length / numPointsToDisplay;
 
-    const numIntervals = numPointsToDisplay - 2;
+    displayedPoints.push(monthlyAverages[0]);
 
-    const intervalSize = Math.ceil((monthlyAverages.length - 2) / numIntervals);
-
-    for (let i = 1; i < monthlyAverages.length - 1; i += intervalSize) {
-      displayedPoints.push(monthlyAverages[i]);
+    for (
+      let i = 1;
+      i < monthlyAverages.length - 2 * intervalSize;
+      i += intervalSize
+    ) {
+      displayedPoints.push(monthlyAverages[Math.floor(i)]);
     }
 
     displayedPoints.push(monthlyAverages[monthlyAverages.length - 1]);
@@ -73,19 +75,17 @@ const getNewData = (data: Array<HoldingsPnLDataType>) => {
 
 export const makeGraph = (data: Array<HoldingsPnLDataType>) => {
   let curData: Array<HoldingsPnLDataType> = [];
-  if (data.length - 1 < MAX_POINT_LINE) {
+  if (data.length < MAX_POINT_LINE) {
     curData = Array(MAX_POINT_LINE)
       .fill(0)
       .map((_, index) => (data[index] ? data[index] : data[data.length - 1]));
-  } else if (data.length - 1 === MAX_POINT_LINE) {
+  } else if (data.length === MAX_POINT_LINE) {
     curData = data;
   } else {
     curData = getNewData(data);
   }
 
   const lastData = curData[curData.length - 1];
-
-  console.log('curData', curData.length);
 
   const [minPnL, maxPnL] = extent(curData, (d: HoldingsPnLDataType) => d.pnl);
 

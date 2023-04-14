@@ -9,7 +9,9 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useInterpolate } from '@animated';
-import { Block, Icon, Spacer, Text } from '@components';
+import { Block, Button, Icon, Spacer, Text } from '@components';
+import { navigationRef } from '@navigation/navigation-service';
+import { APP_SCREEN } from '@navigation/screen-types';
 import { FlashList } from '@shopify/flash-list';
 
 const arr = Array(50)
@@ -139,7 +141,6 @@ export const HeaderAnimated = () => {
           </Block>
         </Animated.View>
       </Animated.View>
-
       <Animated.ScrollView
         onScroll={scrollHandler}
         style={{ marginHorizontal: 8, paddingTop: insets.top }}
@@ -183,6 +184,14 @@ export const HeaderAnimated = () => {
         </Block>
 
         <Spacer height={16} />
+        <Button
+          text="To chart line"
+          onPress={() => {
+            navigationRef.current?.navigate(APP_SCREEN.HOME);
+          }}
+        />
+        <Spacer height={16} />
+
         <FlashList
           data={arr}
           estimatedItemSize={50}

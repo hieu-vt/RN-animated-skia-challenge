@@ -5,10 +5,11 @@ export enum APP_SCREEN {
   UN_AUTHORIZE = 'UN_AUTHORIZE',
   LOGIN = 'LOGIN',
   REGISTER = 'REGISTER',
+  DUOLINGO_HEADER = 'DuoHeader',
 
   AUTHORIZE = 'AUTHORIZE',
-  HOME = 'HOME',
-  HOME1 = 'HOME1',
+  LINE_CHART = 'HOME',
+  MOMO_HEADER = 'HOME1',
 }
 
 export type RootStackParamList = {
@@ -16,8 +17,9 @@ export type RootStackParamList = {
   [APP_SCREEN.REGISTER]: RegisterNavigationParams;
   [APP_SCREEN.UN_AUTHORIZE]: undefined;
   [APP_SCREEN.AUTHORIZE]: undefined;
-  [APP_SCREEN.HOME]: undefined;
-  [APP_SCREEN.HOME1]: undefined;
+  [APP_SCREEN.LINE_CHART]: undefined;
+  [APP_SCREEN.MOMO_HEADER]: undefined;
+  [APP_SCREEN.DUOLINGO_HEADER]: undefined;
 };
 
 export type StackScreenProps<T extends keyof RootStackParamList> =

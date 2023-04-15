@@ -9,7 +9,7 @@ import { MyHolding } from './my-holding';
 
 import { ChartLine } from '../chart';
 
-export const Home1 = () => {
+export const HomeLineChart = () => {
   // state
   const [idSelected, setIdSelected] = useState(0);
 

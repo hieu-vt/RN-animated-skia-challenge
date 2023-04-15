@@ -12,9 +12,9 @@ import { useInterpolate } from '@animated';
 import { Block, Button, Icon, Spacer, Text } from '@components';
 import { navigationRef } from '@navigation/navigation-service';
 import { APP_SCREEN } from '@navigation/screen-types';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 
-const arr = Array(50)
+const arr: any = Array(50)
   .fill(0)
   .map((_, i) => i);
 
@@ -86,6 +86,20 @@ export const HeaderAnimated = () => {
   const restyleIconPinHeader = useAnimatedStyle(() => ({
     transform: [{ translateY: translateYPinHeader.value }],
   }));
+
+  arr[0] = {
+    title: 'Line Chart',
+    onPress: () => {
+      navigationRef.current?.navigate(APP_SCREEN.LINE_CHART);
+    },
+  };
+
+  arr[1] = {
+    title: 'Duoligo header',
+    onPress: () => {
+      navigationRef.current?.navigate(APP_SCREEN.DUOLINGO_HEADER);
+    },
+  };
 
   // render
   return (
@@ -184,26 +198,27 @@ export const HeaderAnimated = () => {
         </Block>
 
         <Spacer height={16} />
-        <Button
-          text="To chart line"
-          onPress={() => {
-            navigationRef.current?.navigate(APP_SCREEN.HOME);
-          }}
-        />
-        <Spacer height={16} />
 
         <FlashList
-          data={arr}
+          data={arr as any}
           estimatedItemSize={50}
           contentContainerStyle={{
             paddingVertical: 10,
             backgroundColor: 'white',
           }}
-          renderItem={({ item }) => (
-            <Block height={30} width={'100%'} middle>
-              <Text text={'Header of momo: ' + item.toString()} />
-            </Block>
-          )}
+          renderItem={({ item }: ListRenderItemInfo<any>) =>
+            item?.title ? (
+              <Button onPress={item.onPress}>
+                <Block height={30} width={'100%'} middle>
+                  <Text text={item.title} />
+                </Block>
+              </Button>
+            ) : (
+              <Block height={30} width={'100%'} middle>
+                <Text text={'Header of momo: ' + item.toString()} />
+              </Block>
+            )
+          }
         />
       </Animated.ScrollView>
     </>

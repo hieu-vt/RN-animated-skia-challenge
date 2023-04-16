@@ -2,10 +2,14 @@ import React from 'react';
 import { Dimensions } from 'react-native';
 
 import Animated, {
+  Easing,
   useAnimatedScrollHandler,
+  useAnimatedStyle,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
+import { useInterpolateColor } from '@animated';
 import { Block, Spacer, Text } from '@components';
 import { FlashList } from '@shopify/flash-list';
 
@@ -40,22 +44,39 @@ export const DuoHeader = () => {
   // state
   const translateY = useSharedValue(0);
 
+  const colorBgValue = useInterpolateColor(
+    translateY,
+    data.map((_, i) => i * HeightScreen),
+    data.map(item => item.bg),
+    'RGB',
+  );
+
   const scrollHandler = useAnimatedScrollHandler(event => {
-    translateY.value = event.contentOffset.y;
+    translateY.value = withTiming(event.contentOffset.y, {
+      duration: 100,
+      easing: Easing.linear,
+    });
   }, []);
+
+  const reStyle = useAnimatedStyle(() => ({
+    backgroundColor: colorBgValue.value,
+  }));
 
   // render
   return (
     <>
       <Animated.View
-        style={{
-          position: 'absolute',
-          backgroundColor: data[0].bg,
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1080,
-        }}>
+        style={[
+          {
+            position: 'absolute',
+            backgroundColor: data[0].bg,
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1080,
+          },
+          reStyle,
+        ]}>
         <Block height={100} paddingTop={50}>
           <Text text="Main header" />
         </Block>
